@@ -105,7 +105,7 @@ export default function MembersTable() {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-md p-4">
+      <div className="bg-red-50 border border-red-200 rounded-xs p-4 shadow-sf-lg">
         <h3 className="text-red-800 font-medium">Error loading members</h3>
         <p className="text-red-600 text-sm mt-1">{error.message}</p>
       </div>
@@ -113,157 +113,160 @@ export default function MembersTable() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Search Controls */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <input
-              type="text"
-              placeholder="Search members..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value, searchType)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div>
-            <select
-              value={searchType}
-              onChange={(e) => handleSearch(searchTerm, e.target.value as any)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="all">All Fields</option>
-              <option value="name">Name</option>
-              <option value="email">Email</option>
-              <option value="mobile">Mobile</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Members Table */}
-      <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mobile
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Domain
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Verification
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Last Active
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {loading && allMembers.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center">
-                    <div className="flex justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    </div>
-                    <p className="mt-2 text-gray-500">Loading members...</p>
-                  </td>
-                </tr>
-              ) : allMembers.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                    No members found
-                  </td>
-                </tr>
-              ) : (
-                allMembers.map((member) => (
-                  <tr key={member.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{member.name}</div>
-                      <div className="text-sm text-gray-500">ID: {member.id}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{member.emailAddress}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{member.mobileNumber}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{member.domain}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        member.status === 'active' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {member.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        member.verificationStatus === 'verified' 
-                          ? 'bg-blue-100 text-blue-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {member.verificationStatus}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatDate(member.dateTimeCreated)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatDate(member.dateTimeLastActive)}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {data?.members?.pageInfo?.hasNextPage && (
-          <div className="bg-gray-50 px-6 py-3 border-t border-gray-200">
-            <div className="flex justify-center">
-              <button
-                onClick={handleLoadMore}
-                disabled={loading}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+    <div className="min-h-screen bg-sf-background-primary text-white">
+      <div className="container mx-auto px-4 py-8 space-y-6">
+        {/* Search Controls */}
+        <div className="sf-table p-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Search members..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value, searchType)}
+                className="sf-input w-full px-4 py-2 text-white placeholder-gray-400"
+              />
+            </div>
+            <div>
+              <select
+                value={searchType}
+                onChange={(e) => handleSearch(searchTerm, e.target.value as any)}
+                className="sf-dropdown px-4 py-2 text-white bg-sf-background-primary"
+                style={{ width: 'auto', minWidth: '150px' }}
               >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Loading...
-                  </>
-                ) : (
-                  'Load More'
-                )}
-              </button>
+                <option value="all">All Fields</option>
+                <option value="name">Name</option>
+                <option value="email">Email</option>
+                <option value="mobile">Mobile</option>
+              </select>
             </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Results Summary */}
-      <div className="text-sm text-gray-500 text-center">
-        Showing {allMembers.length} members
-        {data?.members?.pageInfo?.hasNextPage && ' (more available)'}
+        {/* Members Table */}
+        <div className="sf-table overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-sf-border-primary">
+              <thead className="bg-sf-background-primary border-b border-sf-border-primary">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Mobile
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Domain
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Verification
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Created
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Last Active
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-sf-background-primary divide-y divide-sf-border-primary">
+                {loading && allMembers.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-12 text-center">
+                      <div className="flex justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
+                      </div>
+                      <p className="mt-2 text-gray-400">Loading members...</p>
+                    </td>
+                  </tr>
+                ) : allMembers.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-12 text-center text-gray-400">
+                      No members found
+                    </td>
+                  </tr>
+                ) : (
+                  allMembers.map((member) => (
+                    <tr key={member.id} className="hover:bg-opacity-80 hover:bg-sf-border-primary transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-white">{member.name}</div>
+                        <div className="text-sm text-gray-400">ID: {member.id}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-white">{member.emailAddress}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-white">{member.mobileNumber}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-white">{member.domain}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`sf-badge inline-flex px-3 py-1 text-xs font-semibold rounded-xs ${
+                          member.status === 'active'
+                            ? 'bg-green-900 text-green-300 border border-green-700'
+                            : 'bg-gray-800 text-gray-300 border border-gray-600'
+                        }`}>
+                          {member.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`sf-badge inline-flex px-3 py-1 text-xs font-semibold rounded-xs ${
+                          member.verificationStatus === 'verified'
+                            ? 'bg-blue-900 text-blue-300 border border-blue-700'
+                            : 'bg-yellow-900 text-yellow-300 border border-yellow-700'
+                        }`}>
+                          {member.verificationStatus}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                        {formatDate(member.dateTimeCreated)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                        {formatDate(member.dateTimeLastActive)}
+                      </td>
+                  </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {data?.members?.pageInfo?.hasNextPage && (
+              <div className="bg-sf-background-primary px-6 py-3 border-t border-sf-border-primary">
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                    className="sf-button inline-flex items-center px-6 py-3 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Loading...
+                      </>
+                    ) : (
+                      'Load More'
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Results Summary */}
+          <div className="text-sm text-gray-400 text-center">
+            Showing {allMembers.length} members
+            {data?.members?.pageInfo?.hasNextPage && ' (more available)'}
+          </div>
+        </div>
       </div>
-    </div>
-  )
+    )
 }

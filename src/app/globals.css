@@ -5,11 +5,22 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* ScaleForge Design System Variables */
+  --sf-background-primary: #0A1117;
+  --sf-border-primary: #0A171E;
+  --sf-shadow-light: rgba(16, 24, 40, 0.03);
+  --sf-shadow-medium: rgba(16, 24, 40, 0.08);
+  --sf-radius-xs: 4px;
+  --sf-dropdown-width: 240px;
+  --sf-dropdown-height: 427px;
+  --sf-badge-width: 205px;
+  --sf-badge-height: 237px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: var(--sf-background-primary);
     --foreground: #ededed;
   }
 }
@@ -23,5 +34,32 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* ScaleForge Component Styles */
+  .sf-dropdown {
+    @apply bg-sf-background-primary border border-sf-border-primary rounded-xs shadow-sf-lg;
+    width: var(--sf-dropdown-width);
+  }
+
+  .sf-badge {
+    @apply bg-sf-background-primary rounded-xs;
+    width: var(--sf-badge-width);
+  }
+
+  .sf-table {
+    @apply bg-sf-background-primary border border-sf-border-primary rounded-xs shadow-sf-lg;
+  }
+
+  .sf-button {
+    @apply bg-sf-background-primary border border-sf-border-primary rounded-xs shadow-sf-lg;
+    @apply hover:bg-opacity-80 transition-all duration-200;
+  }
+
+  .sf-input {
+    @apply bg-sf-background-primary border border-sf-border-primary rounded-xs;
+    @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent;
   }
 }
